@@ -13,11 +13,11 @@ class Pixel
 
 class BMP_file
 {
-	int8_t id1;            // Завжди дві літери 'B' і 'M'
-	int8_t id2;            // Завжди дві літери 'B' і 'M'
+	int8_t id1;              // Завжди дві літери 'B' і 'M'
+	int8_t id2;           
     int32_t filesize;        // Розмір файла в байтах
-	int16_t reserved1;     // 0, 0
-	int16_t reserved2;     // 0, 0
+	int16_t reserved1;       // 0, 0
+	int16_t reserved2;    
 	int32_t headersize;      // 54L для 24-бітних зображень
 	int32_t infoSize;        // 40L для 24-бітних зображень
 	int32_t width;           // ширина зображення в пікселях
@@ -33,5 +33,7 @@ class BMP_file
 	Pixel** mas;
 	//Pixel** new_mas;
 public:
-	BMP_file(string);	
+	BMP_file(string);
+	void fill_mas(ifstream&); //заповненя матриці з файлу
+	Pixel** create_mas(int, int); //створення матриці
 };
