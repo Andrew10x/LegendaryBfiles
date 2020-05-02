@@ -40,6 +40,7 @@ public:
 	BMP_file(string);
 	void fill_mas(ifstream&); //заповненя матриці з файлу
 	Pixel** create_mas(int, int); //створення матриці
+	void change_image(float); //зміна розміру зображення
 	void change_width(float); //зміна довжини
 	void change_depth(float); //зміна висоти
 	Pixel interpolation(int, int, int, Pixel, Pixel); //інтерполяція

@@ -75,6 +75,12 @@ Pixel** BMP_file::create_mas(int d, int w)
 	return arr;
 }
 
+void BMP_file::change_image(float n)
+{
+	change_width(n);
+	change_depth(n);
+}
+
 void BMP_file::change_width(float n)
 {	
     new_width = width * n; //
