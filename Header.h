@@ -36,4 +36,6 @@ public:
 	BMP_file(string);
 	void fill_mas(ifstream&); //заповнен€ матриц≥ з файлу
 	Pixel** create_mas(int, int); //створенн€ матриц≥
+	void increase_width(float); //зб≥льшенн€ довжини
+	Pixel interpolation(int, int, int, Pixel, Pixel); //≥нтерпол€ц≥€
 };
