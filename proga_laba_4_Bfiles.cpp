@@ -2,7 +2,7 @@
 
 int main()
 {
-	BMP_file image("bmp.bmp");
+	BMP_file image("bmp2.bmp");
 }
 
 

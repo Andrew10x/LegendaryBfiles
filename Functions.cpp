@@ -25,6 +25,14 @@ BMP_file::BMP_file(string infile)
 
 	mas = create_mas(depth, width);
 	fill_mas(file);
+	//cout << width << " " << depth;
+	//cout << filesize;
+	for (int i = 0; i < depth; i++)
+	{
+		for (int j = 0; j < width; j++)
+			cout << (int)mas[i][j].r << " ";
+		cout << endl;
+	}
 
 	file.close();
 }
@@ -37,21 +45,15 @@ void BMP_file::fill_mas(ifstream& file)
 		for (int j = 0; j < width; j++)
 		{
 			file.read(&temp, sizeof(int8_t));
-			switch (k % 3)
-			{
-			case 0: mas[i][j].r = temp;
-				break;
-			case 1: mas[i][j].g = temp;
-				break;
-			case 2: mas[i][j].r = temp;
-				break;
-			}
+				mas[i][j].r = temp;
+		    file.read(&temp, sizeof(int8_t));
+				mas[i][j].g = temp;
+			file.read(&temp, sizeof(int8_t));
+				mas[i][j].b = temp;	
 
-			k++;
-
-			if (j == width - 1)
+			if (j == width - 1) //ігнорування нульових байтів
 			{
-				if (width % 4 != 0)
+				if (width*3 % 4 != 0)
 				{
 					for (int i = 0; i < 4 - width % 4; i++)
 						file.read(&temp, sizeof(int8_t));
@@ -64,6 +66,7 @@ Pixel** BMP_file::create_mas(int d, int w)
 {
 	Pixel** arr = new Pixel * [d];
 	for (int i = 0; i < d; i++)
-		mas[i] = new Pixel[w];
+		arr[i] = new Pixel[w];
 	return arr;
 }
+
