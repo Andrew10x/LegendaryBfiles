@@ -31,11 +31,16 @@ class BMP_file
 	int32_t biClrUsed;       // Для індексованих зображень, можна поставити 0L
 	int32_t biClrImportant;  // Те саме
 	Pixel** mas;
-	//Pixel** new_mas;
+
+	Pixel** new_mas;
+	Pixel** final_mas;
+	int32_t new_width;
+	int32_t new_depth;
 public:
 	BMP_file(string);
 	void fill_mas(ifstream&); //заповненя матриці з файлу
 	Pixel** create_mas(int, int); //створення матриці
-	void increase_width(float); //збільшення довжини
+	void change_width(float); //зміна довжини
+	void change_depth(float); //зміна висоти
 	Pixel interpolation(int, int, int, Pixel, Pixel); //інтерполяція
 };

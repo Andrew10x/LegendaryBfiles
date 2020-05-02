@@ -25,6 +25,13 @@ BMP_file::BMP_file(string infile)
 
 	mas = create_mas(depth, width);
 	fill_mas(file);
+	file.close();
+
+	new_mas = NULL;
+	final_mas = NULL;
+	new_width = 0;
+	new_depth = 0;
+
 	//cout << width << " " << depth;
 	//cout << filesize;
 	/*for (int i = 0; i < depth; i++)
@@ -33,8 +40,6 @@ BMP_file::BMP_file(string infile)
 			cout << (int)mas[i][j].r << " ";
 		cout << endl;
 	}*/
-
-	file.close();
 }
 
 void BMP_file::fill_mas(ifstream& file)
@@ -70,39 +75,49 @@ Pixel** BMP_file::create_mas(int d, int w)
 	return arr;
 }
 
-void BMP_file::increase_width(float n)
-{
-	
-    int32_t new_width = width * n;
-	Pixel** new_mas = create_mas(depth, new_width);
+void BMP_file::change_width(float n)
+{	
+    new_width = width * n; //
+	new_mas = create_mas(depth, new_width); //
 
-	int* temp = new int[width];
-	for (int i = 0; i < width; i++)
-		 temp[i] = i * n;
+	if (n > 1)
+	{
+		int* temp = new int[width];
+		for (int i = 0; i < width; i++)
+			temp[i] = i * n;
 
-	/*for (int i = 0; i < width; i++)
-		cout << temp[i] << " ";*/
-
-
-	for (int i = 0; i < depth; i++)
-	{ 
-		int k = 0;
-		for (int j = 0; j < new_width; j++)
+		/*for (int i = 0; i < width; i++)
+			cout << temp[i] << " ";*/
+		for (int i = 0; i < depth; i++)
 		{
-			if (k < width)
+			int k = 0;
+			for (int j = 0; j < new_width; j++)
 			{
-				if (j == temp[k])
+				if (k < width)
 				{
-					new_mas[i][j] = mas[i][k];
-					k++; //cout << k << " ";
+					if (j == temp[k])
+					{
+						new_mas[i][j] = mas[i][k];
+						k++; //cout << k << " ";
+					}
+					else
+						new_mas[i][j] = interpolation(j - 1, j, temp[k], new_mas[i][j - 1], mas[i][k]);
 				}
 				else
-					new_mas[i][j] = interpolation(j - 1, j, temp[k], new_mas[i][j - 1], mas[i][k]);
-			}
-			else
-				new_mas[i][j] = new_mas[i][j - 1];
-		} //cout << endl;
+					new_mas[i][j] = new_mas[i][j - 1];
+			} //cout << endl;
+		}
 	}
+	else
+	{
+		for (int i = 0; i < depth; i++)
+			for (int j = 0; j < new_width; j++)
+			{ 
+				int t = j / n;
+				new_mas[i][j] = mas[i][t];
+			}
+	}
+
 
 	//cout << new_mas[depth - 1][new_width - 1].r;
 	//cout << mas[9][10].g;
@@ -124,4 +139,50 @@ Pixel BMP_file::interpolation(int x0, int x, int x1, Pixel y0, Pixel y1)
 	y.g = y0.g + (y1.g - y0.g) * (x - x0) / (x1 - x0);
 	y.b = y0.b + (y1.b - y0.b) * (x - x0) / (x1 - x0);
 	return y;
+}
+
+void BMP_file::change_depth(float n)
+{
+
+	new_depth = depth * n;
+	final_mas = create_mas(new_depth, new_width);
+
+	if (n > 1)
+	{
+		int* temp = new int[new_depth];
+		for (int i = 0; i < new_depth; i++)
+			temp[i] = i * n;
+
+		/*for (int i = 0; i < width; i++)
+			cout << temp[i] << " ";*/
+		for (int i = 0; i < new_width; i++)
+		{
+			int k = 0;
+			for (int j = 0; j < new_depth; j++)
+			{
+				if (k < depth)
+				{
+					if (j == temp[k])
+					{
+						final_mas[j][i] = new_mas[k][i];
+						k++; //cout << k << " ";
+					}
+					else
+						final_mas[j][i] = interpolation(j - 1, j, temp[k], final_mas[j-1][i], new_mas[k][i]);
+						//new_mas[j][i]=  
+				}
+				else
+					final_mas[j][i] = final_mas[j-1][i];
+			} //cout << endl;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < new_width; i++)
+			for (int j = 0; j < new_depth; j++)
+			{
+				int t = j / n;
+				final_mas[j][i] = new_mas[t][i];
+			}
+	}
 }

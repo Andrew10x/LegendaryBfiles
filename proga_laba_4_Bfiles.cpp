@@ -3,7 +3,8 @@
 int main()
 {
 	BMP_file image("bmp2.bmp");
-	image.increase_width(2.4);
+	image.change_width(0.2);
+	image.change_depth(0.2);
 }
 
 
