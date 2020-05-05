@@ -5,7 +5,7 @@ using namespace std;
 BMP_file::BMP_file(string infile)
 {
 	ifstream file(infile, ios::binary);
-    file.read((char*)&id1, sizeof(uint8_t));
+	file.read((char*)&id1, sizeof(uint8_t));
 	file.read((char*)&id2, sizeof(uint8_t));
 	file.read((char*)&filesize, sizeof(int32_t));
 	file.read((char*)&reserved1, sizeof(int16_t));
@@ -31,15 +31,6 @@ BMP_file::BMP_file(string infile)
 	final_mas = NULL;
 	new_width = 0;
 	new_depth = 0;
-
-	//cout << width << " " << depth;
-	//cout << filesize;
-	/*for (int i = 0; i < depth; i++)
-	{
-		for (int j = 0; j < width; j++)
-			cout << (int)mas[i][j].r << " ";
-		cout << endl;
-	}*/
 }
 
 void BMP_file::fill_mas(ifstream& file)
@@ -50,17 +41,17 @@ void BMP_file::fill_mas(ifstream& file)
 		for (int j = 0; j < width; j++)
 		{
 			file.read(&temp, sizeof(int8_t));
-			mas[i][j].r = temp; //cout <<(int) temp << " ";
-		    file.read(&temp, sizeof(int8_t));
-				mas[i][j].g = temp; //cout <<(int) temp << " ";
+			mas[i][j].r = temp; 
 			file.read(&temp, sizeof(int8_t));
-				mas[i][j].b = temp;//	cout <<(int) temp << " ";
-				//cout << endl;
+			mas[i][j].g = temp; 
+			file.read(&temp, sizeof(int8_t));
+			mas[i][j].b = temp;
+		
 			if (j == width - 1) //ігнорування нульових байтів
 			{
-				if (width*3 % 4 != 0)
+				if (width * 3 % 4 != 0)
 				{
-					for (int i = 0; i < 4 - width % 4; i++)
+					for (int i = 0; i < 4 - width * 3 % 4; i++)
 						file.read(&temp, sizeof(int8_t));
 				}
 			}
@@ -82,18 +73,16 @@ void BMP_file::change_image(float n)
 }
 
 void BMP_file::change_width(float n)
-{	
-    new_width = width * n; //
-	new_mas = create_mas(depth, new_width); //
+{
+	new_width = (int32_t)(width * n);
+	new_mas = create_mas(depth, new_width);
 
 	if (n > 1)
 	{
 		int* temp = new int[width];
 		for (int i = 0; i < width; i++)
-			temp[i] = i * n;
+			temp[i] = (int)(i * n);
 
-		/*for (int i = 0; i < width; i++)
-			cout << temp[i] << " ";*/
 		for (int i = 0; i < depth; i++)
 		{
 			int k = 0;
@@ -104,38 +93,25 @@ void BMP_file::change_width(float n)
 					if (j == temp[k])
 					{
 						new_mas[i][j] = mas[i][k];
-						k++; //cout << k << " ";
+						k++;
 					}
 					else
 						new_mas[i][j] = interpolation(j - 1, j, temp[k], new_mas[i][j - 1], mas[i][k]);
 				}
 				else
 					new_mas[i][j] = new_mas[i][j - 1];
-			} //cout << endl;
+			}
 		}
 	}
 	else
 	{
 		for (int i = 0; i < depth; i++)
 			for (int j = 0; j < new_width; j++)
-			{ 
-				int t = j / n;
+			{
+				int t = (int)(j / n);
 				new_mas[i][j] = mas[i][t];
 			}
 	}
-
-
-	//cout << new_mas[depth - 1][new_width - 1].r;
-	//cout << mas[9][10].g;
-	//cout << width;
-	/*for(int i=0; i<depth; i++)
-		for (int j = 0; j < new_width; j++)
-		{
-			cout << (int) new_mas[i][j].r << " ";
-			cout << (int) new_mas[i][j].g << " ";
-			cout << (int) new_mas[i][j].b << " ";
-			cout << endl;
-		}*/
 }
 
 Pixel BMP_file::interpolation(int x0, int x, int x1, Pixel y0, Pixel y1)
@@ -150,17 +126,16 @@ Pixel BMP_file::interpolation(int x0, int x, int x1, Pixel y0, Pixel y1)
 void BMP_file::change_depth(float n)
 {
 
-	new_depth = depth * n;
+	new_depth = (int32_t)(depth * n);
 	final_mas = create_mas(new_depth, new_width);
 
 	if (n > 1)
 	{
 		int* temp = new int[new_depth];
 		for (int i = 0; i < new_depth; i++)
-			temp[i] = i * n;
+			temp[i] = (int)(i * n);
 
-		/*for (int i = 0; i < width; i++)
-			cout << temp[i] << " ";*/
+
 		for (int i = 0; i < new_width; i++)
 		{
 			int k = 0;
@@ -171,15 +146,14 @@ void BMP_file::change_depth(float n)
 					if (j == temp[k])
 					{
 						final_mas[j][i] = new_mas[k][i];
-						k++; //cout << k << " ";
+						k++; 
 					}
 					else
-						final_mas[j][i] = interpolation(j - 1, j, temp[k], final_mas[j-1][i], new_mas[k][i]);
-						//new_mas[j][i]=  
+						final_mas[j][i] = interpolation(j - 1, j, temp[k], final_mas[j - 1][i], new_mas[k][i]);
 				}
 				else
-					final_mas[j][i] = final_mas[j-1][i];
-			} //cout << endl;
+					final_mas[j][i] = final_mas[j - 1][i];
+			}
 		}
 	}
 	else
@@ -187,8 +161,55 @@ void BMP_file::change_depth(float n)
 		for (int i = 0; i < new_width; i++)
 			for (int j = 0; j < new_depth; j++)
 			{
-				int t = j / n;
+				int t = (int)(j / n);
 				final_mas[j][i] = new_mas[t][i];
 			}
 	}
+}
+
+void BMP_file::output_newImage()
+{
+	ofstream outfile("newbmb.bmp", ios::binary);
+	ifstream infile("bmp2.bmp", ios::binary);
+	uint8_t temp;
+	for (int i = 0; i < headersize; i++) //копіюємо header
+	{
+		infile.read((char*)&temp, sizeof(uint8_t)); 
+		outfile.write((char*)&temp, sizeof(uint8_t)); 
+	}
+	infile.close();
+
+	int8_t t;  //заповнюємо пікселями
+	int8_t zero = 0;
+
+	for (int i = 0; i < new_depth; i++)
+	{
+		for (int j = 0; j < new_width; j++)
+		{
+			outfile.write((char*)&final_mas[i][j].r, sizeof(int8_t));
+			outfile.write((char*)&final_mas[i][j].g, sizeof(int8_t));
+			outfile.write((char*)&final_mas[i][j].b, sizeof(int8_t));
+
+			if (j == new_width - 1)    //додаємо нульові байти
+			{
+				if ((new_width * 3) % 4 != 0)
+				{
+					for (int q = 0; q < 4 - (new_width * 3) % 4; q++)
+					{
+						outfile.write((char*)&zero, sizeof(int8_t));
+					}
+				}
+			}
+		}
+	}
+	int32_t new_width_inbytes = new_width * 3 + 4 - (new_width*3) % 4; //нові характеристики
+	int32_t new_depth_inbytes = new_depth;
+	int32_t newfilesize = new_width_inbytes * new_depth_inbytes + headersize;
+	outfile.seekp(2, ios::beg); //записуємо їх у файл
+	outfile.write((char*)&newfilesize, sizeof(int32_t));
+	outfile.seekp(18, ios::beg);
+	outfile.write((char*)&new_width, sizeof(int32_t));
+	outfile.seekp(22, ios::beg);
+	outfile.write((char*)&new_depth, sizeof(int32_t));
+	outfile.close();
 }

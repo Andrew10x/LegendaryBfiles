@@ -5,9 +5,9 @@ using namespace std;
 
 class Pixel
 {
-	int8_t r;
-	int8_t g;
-	int8_t b;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
 	friend class BMP_file;
 };
 
@@ -44,4 +44,5 @@ public:
 	void change_width(float); //зм≥на довжини
 	void change_depth(float); //зм≥на висоти
 	Pixel interpolation(int, int, int, Pixel, Pixel); //≥нтерпол€ц≥€
+	void output_newImage();
 };
