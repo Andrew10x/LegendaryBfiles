@@ -9,8 +9,8 @@ int main()
 	getline(cin, out);
 	cin >> number;
 
-	in = "bmp2.bmp";
-	out = "newbmp.bmp";
+	//in = "bmp2.bmp";
+	//out = "newbmp.bmp";
 	BMP_file image(in);
 	image.change_image(number);
 	image.output_newImage(in, out);

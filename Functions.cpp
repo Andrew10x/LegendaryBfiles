@@ -216,3 +216,18 @@ void BMP_file::output_newImage(string in, string out)
 	outfile.write((char*)&new_depth, sizeof(int32_t));
 	outfile.close();
 }
+
+BMP_file::~BMP_file()
+{
+	for (int i = 0; i < depth; i++)
+	{
+		delete[] mas[i];
+		delete[] new_mas[i];
+	}
+	delete[] mas;
+	delete[] new_mas;
+
+	for (int i = 0; i < new_depth; i++)
+		delete[] final_mas[i];
+	delete[] final_mas;
+}
