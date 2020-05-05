@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <string>
 using namespace std;
 
 class Pixel
@@ -44,5 +45,5 @@ public:
 	void change_width(float); //зм≥на довжини
 	void change_depth(float); //зм≥на висоти
 	Pixel interpolation(int, int, int, Pixel, Pixel); //≥нтерпол€ц≥€
-	void output_newImage();
+	void output_newImage(string, string);
 };

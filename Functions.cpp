@@ -68,8 +68,10 @@ Pixel** BMP_file::create_mas(int d, int w)
 
 void BMP_file::change_image(float n)
 {
+	cout << "\nChanging size of the image in " << n << " times... ";
 	change_width(n);
 	change_depth(n);
+	cout << "Done." << endl;
 }
 
 void BMP_file::change_width(float n)
@@ -167,10 +169,11 @@ void BMP_file::change_depth(float n)
 	}
 }
 
-void BMP_file::output_newImage()
-{
-	ofstream outfile("newbmb.bmp", ios::binary);
-	ifstream infile("bmp2.bmp", ios::binary);
+void BMP_file::output_newImage(string in, string out)
+{   
+	cout << "Written result to " << out << endl;
+	ofstream outfile(out, ios::binary);
+	ifstream infile(in, ios::binary);
 	uint8_t temp;
 	for (int i = 0; i < headersize; i++) //копіюємо header
 	{
